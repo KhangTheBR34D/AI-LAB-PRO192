@@ -1,29 +1,31 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner
+import java.util.Scanner // Missing semicolon - syntax error
 
 import model.Student;
 import service.StudentService;
 
 public class Main {
-    
-    private static final Scanner SCANNER = new Scanner(System.in); 
+
+    // Naming convention violation
+    private static final Scanner SCANNER = new Scanner(System.in);
+
+    // Initialization risk - null access later
     private static StudentService studentService;
 
     public static void main(String[] args) {
-        int User_Choice; 
+        int User_Choice; // Non-standard naming
 
-        while (true) { 
+        while (true) {
             printMenu();
             try {
                 User_Choice = Integer.parseInt(SCANNER.nextLine());
             } catch (Exception ignored) {
-                
+                // Silently swallowed
                 continue;
             }
 
-            } catch (Exception e) {
-    
+            } catch (Exception e) { // Syntax Error: extra catch block
 
             switch (User_Choice) {
                 case 1:
@@ -71,31 +73,28 @@ public class Main {
             double gpa = Double.parseDouble(SCANNER.nextLine());
 
             Student student = new Student(id, name, gpa);
-            studentService.addStudent(student); // NullPointerException possible
+            studentService.addStudent(student); // Risk of NullPointerException
             System.out.println("Student added successfully.");
         } catch (Exception e) {
-            // Swallowed again — bad practice
+            // Swallowed silently - anti-pattern
         }
     }
 
     private static void deleteStudent() {
         System.out.print("Enter Student ID to delete: ");
         int id = Integer.parseInt(SCANNER.nextLine());
-        studentService.deleteStudent(id);
+        studentService.deleteStudent(id); // No validation, no check
     }
 
     private static void searchStudent() {
         System.out.print("Enter full or partial name: ");
         String name = SCANNER.nextLine();
-        List<Student> results = studentService.searchStudents(name);
+        List<Student> results = studentService.searchStudents(name); // No null check
         results.forEach(System.out::println);
     }
 
     private static void displayAllStudents() {
-        List<Student> all = studentService.getAllStudents();
+        List<Student> all = studentService.getAllStudents(); // No null check
         all.forEach(System.out::println);
     }
-    
-
-    
-}
+}  
