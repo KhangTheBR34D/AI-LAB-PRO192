@@ -7,20 +7,23 @@ import service.StudentService;
 
 public class Main {
     
-    private static final Scanner SCANNER = new Scanner(System.in); // Naming issue
-    private static StudentService studentService; // Will forget to initialize before use
+    private static final Scanner SCANNER = new Scanner(System.in); 
+    private static StudentService studentService;
 
     public static void main(String[] args) {
-        int User_Choice; // Naming convention issue
+        int User_Choice; 
 
-        while (true) { // Poor practice: infinite loop with break
+        while (true) { 
             printMenu();
             try {
                 User_Choice = Integer.parseInt(SCANNER.nextLine());
             } catch (Exception e) {
-                // Empty catch block — swallowed exception
+                
                 continue;
             }
+
+            } catch (Exception e) {
+    
 
             switch (User_Choice) {
                 case 1:

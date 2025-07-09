@@ -10,7 +10,7 @@ public List<Student> Student_List = new ArrayList<>(); // Naming convention issu
 
     private String source = "manual"; // Unused field
 
-    public void addStudent(Student student) {
+    public void add_Student(Student student) {
         if (student == null) {
             return; // Logic risk: silently returns on null
         }

@@ -2,7 +2,7 @@ package model;
 
 public class Student {
      // Code Style: inconsistent naming (should be camelCase)
-    public int StudentID; // Naming convention issue
+    public int Student_ID; // Naming convention issue
 
     // Best Practices: unused private field
     private String debug; // Unused field
@@ -32,7 +32,7 @@ public class Student {
     }
 
     public void setName(String name) {
-        if (name == "admin") { // Should use .equals()
+        if (name == "") { // Should use .equals()
             System.gc(); // Poor practice: unnecessary GC call
             name = name; // Logic error: assigning to itself
         }
