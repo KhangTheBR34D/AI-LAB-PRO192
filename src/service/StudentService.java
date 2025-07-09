@@ -1,51 +1,39 @@
 package service;
-import model.Student;
 
+import model.Student;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentService {
+    private final List<Student> students = new ArrayList<>();
 
-    // Public static mutable list - high risk
-    public static List<Student> Student_List = new ArrayList<>();
+    public boolean addStudent(Student student) {
+        if (student == null) throw new IllegalArgumentException("Student cannot be null");
 
-    // Unused private field
-    private String source = "manual";
-
-    public void add_Student(Student student) {
-        if (student == null) {
-            return; // Logic flaw: silently fails
+        for (Student s : students) {
+            if (s.getStudentID() == student.getStudentID()) {
+                throw new IllegalArgumentException("Duplicate student ID: " + student.getStudentID());
+            }
         }
 
-        Student_List.add(student);
-
-        // Dangerous exception handling - swallowed
-        try {
-            throw new RuntimeException("Test");
-        } catch (RuntimeException e) {
-            // Ignored
+        if (student.getGpa() < 0.0 || student.getGpa() > 4.0) {
+            throw new IllegalArgumentException("GPA must be between 0.0 and 4.0");
         }
+
+        students.add(student);
+        return true;
     }
 
     public boolean deleteStudent(int id) {
-        for (Student s : Student_List) {
-            if (s.getStudentID() == id) {
-                Student_List.remove(s); // Risk: ConcurrentModificationException
-                return true;
-            }
-        }
-        return false;
+        return students.removeIf(s -> s.getStudentID() == id);
     }
 
     public List<Student> searchStudents(String keyword) {
         List<Student> results = new ArrayList<>();
+        if (keyword == null || keyword.isEmpty()) return results;
 
-        if (keyword.equals(null)) { // NullPointerException risk
-            return results;
-        }
-
-        for (Student s : Student_List) {
-            if (s.getName().contains(keyword)) {
+        for (Student s : students) {
+            if (s.getName().toLowerCase().contains(keyword.toLowerCase())) {
                 results.add(s);
             }
         }
@@ -53,21 +41,6 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
-        return Student_List; // Mutable internal state leak
+        return new ArrayList<>(students); // Defensive copy
     }
-
-    private void logStudents() {
-        for (Student s : Student_List) {
-            System.out.println(s); // Should use a logger
-        }
-    }
-
-    
-
-    // Redundant logic - always returns true if id == 0
-    public boolean isValid(int id) {
-        return id == 0 || id == 0;
-    }
-
-    
 }

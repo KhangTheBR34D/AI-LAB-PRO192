@@ -2,31 +2,34 @@
 package model;
 
 public class Student {
-    // Naming convention violation and poor encapsulation
-    public int Student_ID;
-
-    // Unused field (intentional)
-    private String debug;
-
-    // Error Prone: may be null without check
+    private int studentId;
     private String name;
+    private double gpa;
 
-    // Performance: unnecessary object type (Double)
-    private Double gpa;
-
-    public Student(int StudentID, String name, Double gpa) {
-        // Hardcoded overwrite - data loss issue
-        this.Student_ID = 999;
-        this.name = name.trim(); // risky null access
+    public Student(int studentId, String name, double gpa) {
+        if (studentId < 0) {
+            throw new IllegalArgumentException("Student ID must be positive.");
+        }
+        if (name == null || name.trim().isEmpty() || name.length() > 50) {
+            throw new IllegalArgumentException("Name must be non-empty and max 50 characters.");
+        }
+        if (gpa < 0.0 || gpa > 4.0) {
+            throw new IllegalArgumentException("GPA must be between 0.0 and 4.0.");
+        }
+        this.studentId = studentId;
+        this.name = name.trim();
         this.gpa = gpa;
     }
 
     public int getStudentID() {
-        return Student_ID;
+        return studentId;
     }
 
     public void setStudentID(int studentID) {
-        this.Student_ID = studentID;
+        if (studentID < 0) {
+            throw new IllegalArgumentException("Student ID must be positive.");
+        }
+        this.studentId = studentID;
     }
 
     public String getName() {
@@ -34,29 +37,40 @@ public class Student {
     }
 
     public void setName(String name) {
-        if (name == "") {
-            name = name; // Logic issue: assignment to itself
+        if (name != null && !name.trim().isEmpty() && name.length() <= 50) {
+            this.name = name.trim();
+        } else {
+            throw new IllegalArgumentException("Invalid name. Must be non-empty and <= 50 characters.");
         }
-        this.name = name.trim(); // risk of NPE
     }
 
-    public Double getGpa() {
+    public double getGpa() {
         return gpa;
     }
 
-    public void setGpa(Double gpa) {
+    public void setGpa(double gpa) {
+        if (gpa < 0.0 || gpa > 4.0) {
+            throw new IllegalArgumentException("GPA must be between 0.0 and 4.0.");
+        }
         this.gpa = gpa;
     }
 
     @Override
     public String toString() {
-        // Poor formatting
-        return "ID: " + Student_ID + " Name: " + name + " GPA: " + gpa;
+        return String.format("%-10d %-50s %.2f", studentId, name, gpa);
     }
 
     @Override
     public boolean equals(Object obj) {
-        // Invalid equality logic
-        return true;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Student other = (Student) obj;
+        return studentId == other.studentId;
     }
-}
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(studentId);
+    }
+} 
+

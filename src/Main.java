@@ -1,54 +1,45 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner // Missing semicolon - syntax error
-
 import model.Student;
 import service.StudentService;
 
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
 public class Main {
 
-    // Naming convention violation
-    private static final Scanner SCANNER = new Scanner(System.in);
-
-    // Initialization risk - null access later
-    private static StudentService studentService;
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final StudentService studentService = new StudentService();
 
     public static void main(String[] args) {
-        int User_Choice; // Non-standard naming
-
-        while (true) {
+        int choice;
+        do {
             printMenu();
             try {
-                User_Choice = Integer.parseInt(SCANNER.nextLine());
-            } catch (Exception ignored) {
-                // Silently swallowed
-                continue;
+                choice = Integer.parseInt(scanner.nextLine());
+                switch (choice) {
+                    case 1:
+                        addStudent();
+                        break;
+                    case 2:
+                        deleteStudent();
+                        break;
+                    case 3:
+                        searchStudent();
+                        break;
+                    case 4:
+                        displayAllStudents();
+                        break;
+                    case 5:
+                        System.out.println("Exiting program.");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Try again.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                choice = 0;
             }
-
-            } catch (Exception e) { // Syntax Error: extra catch block
-
-            switch (User_Choice) {
-                case 1:
-                    addStudent();
-                    break;
-                case 2:
-                    deleteStudent();
-                    break;
-                case 3:
-                    searchStudent();
-                    break;
-                case 4:
-                    displayAllStudents();
-                    break;
-                case 5:
-                    System.out.println("Exiting program.");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Try again.");
-            }
-
-            if (User_Choice == 5) break;
-        }
+        } while (choice != 5);
     }
 
     private static void printMenu() {
@@ -64,37 +55,57 @@ public class Main {
     private static void addStudent() {
         try {
             System.out.print("Enter Student ID: ");
-            int id = Integer.parseInt(SCANNER.nextLine());
+            int id = Integer.parseInt(scanner.nextLine());
 
             System.out.print("Enter Full Name: ");
-            String name = SCANNER.nextLine();
+            String name = scanner.nextLine();
 
             System.out.print("Enter GPA: ");
-            double gpa = Double.parseDouble(SCANNER.nextLine());
+            double gpa = Double.parseDouble(scanner.nextLine());
 
             Student student = new Student(id, name, gpa);
-            studentService.addStudent(student); // Risk of NullPointerException
+            studentService.addStudent(student);
             System.out.println("Student added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         } catch (Exception e) {
-            // Swallowed silently - anti-pattern
+            System.out.println("Unexpected error occurred.");
         }
     }
 
     private static void deleteStudent() {
-        System.out.print("Enter Student ID to delete: ");
-        int id = Integer.parseInt(SCANNER.nextLine());
-        studentService.deleteStudent(id); // No validation, no check
+        try {
+            System.out.print("Enter Student ID to delete: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            boolean deleted = studentService.deleteStudent(id);
+            if (deleted) {
+                System.out.println("Student deleted successfully.");
+            } else {
+                System.out.println("Student not found.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID input.");
+        }
     }
 
     private static void searchStudent() {
         System.out.print("Enter full or partial name: ");
-        String name = SCANNER.nextLine();
-        List<Student> results = studentService.searchStudents(name); // No null check
-        results.forEach(System.out::println);
+        String keyword = scanner.nextLine();
+        List<Student> results = studentService.searchStudents(keyword);
+        if (results.isEmpty()) {
+            System.out.println("No students matched your search.");
+        } else {
+            results.forEach(System.out::println);
+        }
     }
 
     private static void displayAllStudents() {
-        List<Student> all = studentService.getAllStudents(); // No null check
-        all.forEach(System.out::println);
+        List<Student> all = studentService.getAllStudents();
+        if (all.isEmpty()) {
+            System.out.println("No students in the list.");
+        } else {
+            System.out.printf("%-10s %-30s %-5s\n", "ID", "Name", "GPA");
+            all.forEach(System.out::println);
+        }
     }
-}  
+}
