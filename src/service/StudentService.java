@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class StudentService {
-public List<Student> Student_List = new ArrayList<>(); // Naming convention issue, mutable field exposed
+public static List<Student> Student_List = new ArrayList<>(); // Naming convention issue, mutable field exposed
 
     private String source = "manual"; // Unused field
 

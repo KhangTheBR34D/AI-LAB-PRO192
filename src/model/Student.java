@@ -33,10 +33,10 @@ public class Student {
 
     public void setName(String name) {
         if (name == "") { // Should use .equals()
-            System.gc(); // Poor practice: unnecessary GC call
+            
             name = name; // Logic error: assigning to itself
         }
-        this.name = name;
+        this.name = name.trim();
     }
 
     public Double getGpa() {
@@ -53,12 +53,9 @@ public class Student {
         return "ID: " + StudentID + " Name: " + name + " GPA: " + gpa; // Consider String.format()
     }
 
-    public void reset() { // Dead method
-        // No operation
-    }
-
-    public void init() { // Another unused method
-        String temp = name.toUpperCase(); // Unused variable
-    }
-    
+    @Override
+    public boolean equals(Object obj) {
+        return true; // breaks equality logic
+}
+   
 }

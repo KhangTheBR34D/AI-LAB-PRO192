@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Scanner
 
 import model.Student;
 import service.StudentService;
@@ -17,7 +17,7 @@ public class Main {
             printMenu();
             try {
                 User_Choice = Integer.parseInt(SCANNER.nextLine());
-            } catch (Exception e) {
+            } catch (Exception ignored) {
                 
                 continue;
             }
